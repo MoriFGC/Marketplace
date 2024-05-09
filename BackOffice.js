@@ -15,7 +15,9 @@ async function fetchItems() {
             }
         });
         const products = await response.json()
-        return console.log(products); 
+        products.forEach((product) => {
+            console.log(product);
+        })
     } catch (error) {
         console.error(error);
     }
@@ -57,4 +59,31 @@ async function postItems() {
     console.log(response);
 }
 
-postItems()
+// grazie a questa funzione mostrerò tutti gli item in pagina
+const showItems = async () => {
+
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${tokenKey}`
+        }
+    });
+
+    const items = await response.json();
+    items.forEach(item => {
+        itemsContainer.innerHTML += `
+        <div class=" col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2 card">
+          <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
+          <div class="card-body">
+            <h5 class="card-title">${item.name}</h5>
+            <p class="card-text">${item.brand}</p>
+            <p class="card-text">${item.description}</p>
+            <p class="card-text">${item.price}</p>
+            <a href="#" class="btn btn-primary">Edit</a>
+          </div>
+        </div>
+        `
+    });
+
+};
+
+showItems()
