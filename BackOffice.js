@@ -59,16 +59,16 @@ const postItems = async () => {
         };
 
     const response = await fetch( url, {
-        method: 'POST',
+        method: 'POST', // post mi serve per creare un item
         headers: {
-            'Authorization': `Bearer ${tokenKey}`,
-            "content-type": "application/json",
+            'Authorization': `Bearer ${tokenKey}`, // metto il token per accedere all'api
+            "content-type": "application/json", // gli dico che è un json
         },
         body: JSON.stringify(items)
     });
     if (response.ok) { // se response non ha problemi
         alert('Hai creato il prodotto!');
-        showItems();
+        showItems(); // aggiorno la pagina quando creo il prodotto richiamando la funzione che mi carica le card
     };
 }
 //------------------------------------------------------------
@@ -95,16 +95,16 @@ const editItems = async (id) => {
             };
     
         const response = await fetch( url + id ,{
-            method: 'PUT',
+            method: 'PUT', // put serve per modificare il valore delle proprietà
             headers: {
-                'Authorization': `Bearer ${tokenKey}`,
-                "content-type": "application/json",
+                'Authorization': `Bearer ${tokenKey}`, // metto il token per accedere all'api
+                "content-type": "application/json", // gli dico che è un json
             },
             body: JSON.stringify(updateItems)
         });
         if (response.ok) { // se response non ha problemi
             alert('Modifica andata a buon fine!');
-            showItems();
+            showItems(); // aggiorno la pagina quando modifico il prodotto richiamando la funzione che mi carica le card
         };
 };
 // -------------------------------------------------------------------------------------------
@@ -115,12 +115,12 @@ const deleteItems = async (id) => {
         const response = await fetch( url + id ,{
             method: 'DELETE', // delete serve a eliminare
             headers: {
-                'Authorization': `Bearer ${tokenKey}`,
-                "content-type": "application/json",
+                'Authorization': `Bearer ${tokenKey}`, // metto il token per accedere all'api
+                "content-type": "application/json", // gli dico che è un json
             }  
         });
         if (response.ok) { // se response non ha problemi
             alert('Hai eliminato il prodotto!');
-            showItems();
+            showItems(); // aggiorno la pagina quando elimino il prodotto richiamando la funzione che mi carica le card
         };
 };
