@@ -5,30 +5,41 @@ const tokenKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNiOTVmMGIxY
 //------------------------------------------------------
 
 
-// creo una funzione asincrona per ottenere i dati dell'endpoint
-async function fetchItems() {
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${tokenKey}`
-            }
-        });
-        const products = await response.json()
-        products.forEach((product) => {
-            console.log(product);
-        })
-    } catch (error) {
-        console.error(error);
-    }
-}
+// grazie a questa funzione mostrerò tutti gli item in pagina
+const showItems = async () => {
 
-fetchItems()
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${tokenKey}`
+        }
+    });
+
+    const items = await response.json();
+    itemsContainer.innerHTML = ''; // svuoto html ogni volta che richiamo la funzione
+    items.forEach(item => {
+        itemsContainer.innerHTML += `
+        <div class=" col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2 card">
+          <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
+          <div class="card-body">
+            <h5 class="card-title">${item.name}</h5>
+            <p class="card-text">Brand: ${item.brand}</p>
+            <p class="card-text">Description: ${item.description}</p>
+            <p class="card-text">${item.price}$</p>
+            <a href="#" class="btn btn-primary" onclick="editItems('${item._id}')" >Edit</a>
+            <a href="#" class="btn btn-danger" onclick="deleteItems('${item._id}')" >Remove</a>
+          </div>
+        </div>
+        `
+    });
+
+};
+
+showItems()
 //----------------------------------------------------------
 
 //creo una funzione per postare gli utenti nell'array
 
-async function postItems() {
+const postItems = async () => {
 
     // vado a puntare tutti gli input
     const name = document.getElementById('name').value;
@@ -55,35 +66,61 @@ async function postItems() {
         },
         body: JSON.stringify(items)
     });
-    
-    console.log(response);
+    if (response.ok) { // se response non ha problemi
+        alert('Hai creato il prodotto!');
+        showItems();
+    };
 }
+//------------------------------------------------------------
 
-// grazie a questa funzione mostrerò tutti gli item in pagina
-const showItems = async () => {
+// creo una funzione per ottenere l'id dell'item e poi modificandolo sciacciando il bottone sulla card
 
-    const response = await fetch(url, {
-        headers: {
-            'Authorization': `Bearer ${tokenKey}`
-        }
-    });
-
-    const items = await response.json();
-    items.forEach(item => {
-        itemsContainer.innerHTML += `
-        <div class=" col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2 card">
-          <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
-          <div class="card-body">
-            <h5 class="card-title">${item.name}</h5>
-            <p class="card-text">${item.brand}</p>
-            <p class="card-text">${item.description}</p>
-            <p class="card-text">${item.price}</p>
-            <a href="#" class="btn btn-primary">Edit</a>
-          </div>
-        </div>
-        `
-    });
-
+const editItems = async (id) => {
+    console.log(id);
+        // vado a puntare tutti gli input
+        const name = document.getElementById('name').value;
+        const description = document.getElementById('description').value;
+        const brand = document.getElementById('brand').value;
+        const imageUrl = document.getElementById('url').value;
+        const price = document.getElementById('price').value;
+    //----------------------------------------------------
+    
+        // vado a creare le proprietà che staranno dentro all'array
+        const  updateItems= {
+            name: name,
+            description: description,
+            brand: brand,
+            imageUrl: imageUrl,
+            price: price
+            };
+    
+        const response = await fetch( url + id ,{
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${tokenKey}`,
+                "content-type": "application/json",
+            },
+            body: JSON.stringify(updateItems)
+        });
+        if (response.ok) { // se response non ha problemi
+            alert('Modifica andata a buon fine!');
+            showItems();
+        };
 };
+// -------------------------------------------------------------------------------------------
 
-showItems()
+// creo una funzione per ottenere l'id dell'item e poi eliminandolo sciacciando il bottone sulla card
+
+const deleteItems = async (id) => {
+        const response = await fetch( url + id ,{
+            method: 'DELETE', // delete serve a eliminare
+            headers: {
+                'Authorization': `Bearer ${tokenKey}`,
+                "content-type": "application/json",
+            }  
+        });
+        if (response.ok) { // se response non ha problemi
+            alert('Hai eliminato il prodotto!');
+            showItems();
+        };
+};
