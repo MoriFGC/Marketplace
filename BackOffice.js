@@ -25,7 +25,7 @@ const showItems = async () => {
             <p class="card-text">Brand: ${item.brand}</p>
             <p class="card-text">Description: ${item.description}</p>
             <p class="card-text">${item.price}$</p>
-            <a href="#" class="btn btn-primary" onclick="editItems('${item._id}')" >Edit</a>
+            <a href="#" class="btn btn-primary" onclick="getId('${item._id}')" >Edit</a>
             <a href="#" class="btn btn-danger" onclick="deleteItems('${item._id}')" >Remove</a>
           </div>
         </div>
@@ -75,14 +75,14 @@ const postItems = async () => {
 
 // creo una funzione per ottenere l'id dell'item e poi modificandolo sciacciando il bottone sulla card
 
-const editItems = async (id) => {
-    console.log(id);
+const editItems = async () => {
         // vado a puntare tutti gli input
         const name = document.getElementById('name').value;
         const description = document.getElementById('description').value;
         const brand = document.getElementById('brand').value;
         const imageUrl = document.getElementById('url').value;
         const price = document.getElementById('price').value;
+        const id = document.getElementById('id').value;
     //----------------------------------------------------
     
         // vado a creare le proprietà che staranno dentro all'array
@@ -94,7 +94,7 @@ const editItems = async (id) => {
             price: price
             };
     
-        const response = await fetch( url + id ,{
+        const response = await fetch( url + id,{
             method: 'PUT', // put serve per modificare il valore delle proprietà
             headers: {
                 'Authorization': `Bearer ${tokenKey}`, // metto il token per accedere all'api
@@ -123,4 +123,29 @@ const deleteItems = async (id) => {
             alert('Hai eliminato il prodotto!');
             showItems(); // aggiorno la pagina quando elimino il prodotto richiamando la funzione che mi carica le card
         };
+};
+// ------------------------------------------------------------------------------------------------
+
+// grazie a questa funzione quando clicco su edit della card mi restituisce nel form i dati della card
+// il parametro mi serve per puntare l'id dell'item
+const getId = async (idItem) => {
+    if (idItem) { // se quando clicco su edit della card è true
+        // mi riporta l'id della card insieme al url
+        const response = await fetch(url + idItem, {
+            headers: {
+                'Authorization': `Bearer ${tokenKey}`
+            }
+        });
+    
+        const items = await response.json();
+        // quello che c'è scritto sulla card me lo ridà nel form
+        document.getElementById('name').value = items.name;
+        document.getElementById('description').value = items.description;
+        document.getElementById('brand').value = items.brand;
+        document.getElementById('url').value = items.imageUrl;
+        document.getElementById('price').value = items.price;
+        // userò l'input nascosto per ottenere anche l'id del prodotto quando cliccherò sull'edit della card
+        document.getElementById('id').value = items._id;
+        
+    };
 };
