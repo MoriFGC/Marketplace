@@ -1,5 +1,10 @@
+// al caricamento della pagina succedono cose
+window.onload = () => {
+    const newUrl = new URLSearchParams(location.search);
+    const id = newUrl.get("id");
+
 // url endpoint
-const url = 'https://striveschool-api.herokuapp.com/api/product/';
+const url = 'https://striveschool-api.herokuapp.com/api/product/' + id;
 // token key
 const tokenKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNiOTVmMGIxYzc3ZjAwMTUwNjgzZGMiLCJpYXQiOjE3MTUxODEwNDEsImV4cCI6MTcxNjM5MDY0MX0.slxBXijhwxQb7yD9pMOQQCP77To-6WUsp-UXVwTF9nc';
 //------------------------------------------------------
@@ -14,23 +19,24 @@ const showItems = async () => {
             'Authorization': `Bearer ${tokenKey}`
         }
     });
+    
 
     const items = await response.json();
-    items.forEach(item => {
-        itemsContainer.innerHTML += `
+    console.log(items);
+    itemsContainer.innerHTML = `
         <div class="card-style col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2 card bg-dark text-light">
-          <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
+          <img src="${items.imageUrl}" class="card-img-top" alt="${items.name}">
           <div class="card-body">
-            <h5 class="card-title">${item.name}</h5>
-            <p class="card-text">${item.brand}</p>
-            <p class="card-text">${item.description}</p>
-            <p class="card-text">${item.price}</p>
-            <a href="details.html?id=${item._id}" class="btn btn-primary">Details</a>
+            <h5 class="card-title">${items.name}</h5>
+            <p class="card-text">${items.brand}</p>
+            <p class="card-text">${items.description}</p>
+            <p class="card-text">${items.price}</p>
+            <a href="details.html" class="btn btn-primary">Details</a>
           </div>
         </div>
         `
-    });
 
 };
 
 showItems()
+}
